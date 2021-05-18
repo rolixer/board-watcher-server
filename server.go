@@ -238,6 +238,14 @@ func watch(w http.ResponseWriter, r *http.Request) {
 	for {
 		_, _, err := conn.ReadMessage()
 		if err != nil {
+			if ce, ok := err.(*websocket.CloseError); ok {
+				switch ce.Code {
+				case websocket.CloseNormalClosure,
+					websocket.CloseGoingAway,
+					websocket.CloseNoStatusReceived:
+					return
+				}
+			}
 			log.Println("Error during message reading:", err)
 			continue
 		}
