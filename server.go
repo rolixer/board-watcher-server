@@ -236,12 +236,11 @@ func watch(w http.ResponseWriter, r *http.Request) {
 
 	// The event loop
 	for {
-		_, message, err := conn.ReadMessage()
+		_, _, err := conn.ReadMessage()
 		if err != nil {
 			log.Println("Error during message reading:", err)
-			break
+			continue
 		}
-		log.Printf("Received: %s", message)
 	}
 }
 
