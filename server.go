@@ -198,7 +198,7 @@ func AddMove(id string, m Move) {
 
 func sendGame(id string, c *websocket.Conn) {
 	for _, m := range games[id].moves {
-		moveStr := fmt.Sprintf("{%d: [0, false], %d:[%d, %t]}", fields[m.From], fields[m.To], pieces[m.Piece], m.Color)
+		moveStr := fmt.Sprintf("{\"piece\":%d, \"from\":%d, \"to\":%d, \"color\":%t}", pieces[m.Piece], fields[m.From], fields[m.To], m.Color)
 
 		c.WriteMessage(websocket.TextMessage, []byte(moveStr))
 	}
