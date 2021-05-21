@@ -6,7 +6,6 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
-	"os"
 
 	"github.com/gorilla/websocket"
 )
@@ -196,6 +195,28 @@ func AddMove(id string, m Move) {
 
 }
 
+func revertMove(w http.ResponseWriter, r *http.Request) {
+	id := r.URL.Query().Get("id")
+
+	if id == "" {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	if games[id] == nil {
+		w.Write([]byte("Brak gry o podanym id"))
+		return
+	}
+
+	moves_r := games[id].moves
+	moves_r = moves_r[:len(moves_r)-1]
+	games[id].moves = moves_r
+
+	for _, c := range games[id].connections {
+		c.WriteMessage(websocket.TextMessage, []byte("REVERT"))
+	}
+}
+
 func sendGame(id string, c *websocket.Conn) {
 	for _, m := range games[id].moves {
 		moveStr := fmt.Sprintf("{\"piece\":%d, \"from\":%d, \"to\":%d, \"color\":%t}", pieces[m.Piece], fields[m.From], fields[m.To], m.Color)
@@ -257,5 +278,6 @@ func Start() {
 	http.HandleFunc("/", home)
 	http.HandleFunc("/move", addMoveReq)
 	http.HandleFunc("/watch", watch)
-	log.Fatal(http.ListenAndServe(":"+os.Getenv("PORT"), nil))
+	http.HandleFunc("/revert", revertMove)
+	log.Fatal(http.ListenAndServe("localhost:8181", nil))
 }
