@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/gorilla/websocket"
 )
@@ -215,6 +216,8 @@ func revertMove(w http.ResponseWriter, r *http.Request) {
 	for _, c := range games[id].connections {
 		c.WriteMessage(websocket.TextMessage, []byte("REVERT"))
 	}
+
+	w.Write([]byte("Cofnięto"))
 }
 
 func sendGame(id string, c *websocket.Conn) {
@@ -279,5 +282,5 @@ func Start() {
 	http.HandleFunc("/move", addMoveReq)
 	http.HandleFunc("/watch", watch)
 	http.HandleFunc("/revert", revertMove)
-	log.Fatal(http.ListenAndServe("localhost:8181", nil))
+	log.Fatal(http.ListenAndServe(":"+os.Getenv("PORT"), nil))
 }
