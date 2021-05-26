@@ -104,34 +104,6 @@ type Games map[string]*game
 var upgrader = websocket.Upgrader{CheckOrigin: func(*http.Request) bool { return true }} // use default options
 var games = make(Games)
 
-func socketHandler(w http.ResponseWriter, r *http.Request) {
-	// Upgrade our raw HTTP connection to a websocket based one
-	log.Print(r.URL.Query().Get("id"))
-
-	conn, err := upgrader.Upgrade(w, r, nil)
-
-	if err != nil {
-		log.Print("Error during connection upgradation:", err)
-		return
-	}
-	defer conn.Close()
-
-	// The event loop
-	for {
-		messageType, message, err := conn.ReadMessage()
-		if err != nil {
-			log.Println("Error during message reading:", err)
-			break
-		}
-		log.Printf("Received: %s", message)
-		err = conn.WriteMessage(messageType, message)
-		if err != nil {
-			log.Println("Error during message writing:", err)
-			break
-		}
-	}
-}
-
 func home(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "Index Page")
 }
@@ -179,8 +151,10 @@ func addMoveReq(w http.ResponseWriter, r *http.Request) {
 		games[id] = g
 	}
 
-	games[id].moves = append(games[id].moves, m[0])
-	sendMove(id, m[0])
+	for _, m := range m {
+		games[id].moves = append(games[id].moves, m)
+		sendMove(id, m)
+	}
 
 }
 
@@ -277,7 +251,6 @@ func watch(w http.ResponseWriter, r *http.Request) {
 }
 
 func Start() {
-	http.HandleFunc("/socket", socketHandler)
 	http.HandleFunc("/", home)
 	http.HandleFunc("/move", addMoveReq)
 	http.HandleFunc("/watch", watch)
