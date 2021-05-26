@@ -6,7 +6,6 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
-	"os"
 
 	"github.com/gorilla/websocket"
 )
@@ -217,8 +216,8 @@ func sendMove(id string, m Move) {
 func watch(w http.ResponseWriter, r *http.Request) {
 	id := r.URL.Query().Get("id")
 	if games[id] == nil {
-		fmt.Fprintf(w, "Brak gry o takim id")
-		return
+		g := &game{[]Move{}, []*websocket.Conn{}}
+		games[id] = g
 	}
 
 	conn, err := upgrader.Upgrade(w, r, nil)
@@ -255,5 +254,5 @@ func Start() {
 	http.HandleFunc("/move", addMoveReq)
 	http.HandleFunc("/watch", watch)
 	http.HandleFunc("/revert", revertMove)
-	log.Fatal(http.ListenAndServe(":"+os.Getenv("PORT"), nil))
+	log.Fatal(http.ListenAndServe("localhost:8181", nil))
 }
