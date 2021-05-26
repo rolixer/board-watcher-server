@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/gorilla/websocket"
 )
@@ -254,5 +255,5 @@ func Start() {
 	http.HandleFunc("/move", addMoveReq)
 	http.HandleFunc("/watch", watch)
 	http.HandleFunc("/revert", revertMove)
-	log.Fatal(http.ListenAndServe("localhost:8181", nil))
+	log.Fatal(http.ListenAndServe(":"+os.Getenv("PORT"), nil))
 }
