@@ -277,7 +277,7 @@ func saveAI(w http.ResponseWriter, r *http.Request) {
 func getAI(w http.ResponseWriter, r *http.Request) {
 	id := r.URL.Query().Get("id")
 
-	if _, ok := games[id]; ok {
+	if _, ok := gamesAI[id]; ok {
 		w.Write([]byte(gamesAI[id]))
 	} else {
 		w.Write([]byte("Brak pozycji o takim ID"))
