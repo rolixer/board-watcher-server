@@ -103,6 +103,7 @@ type Games map[string]*game
 
 var upgrader = websocket.Upgrader{CheckOrigin: func(*http.Request) bool { return true }} // use default options
 var games = make(Games)
+var gamesAI = make(map[string]string)
 
 func home(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "Index Page")
@@ -260,11 +261,38 @@ func startGame(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("Rozpoczęto rozgrywkę"))
 }
 
+func saveAI(w http.ResponseWriter, r *http.Request) {
+	id := r.URL.Query().Get("id")
+
+	body, err := ioutil.ReadAll(r.Body)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	gamesAI[id] = string(body)
+
+}
+
+func getAI(w http.ResponseWriter, r *http.Request) {
+	id := r.URL.Query().Get("id")
+
+	if _, ok := games[id]; ok {
+		w.Write([]byte(gamesAI[id]))
+	} else {
+		w.Write([]byte("Brak pozycji o takim ID"))
+		return
+	}
+}
+
 func Start() {
 	http.HandleFunc("/", home)
 	http.HandleFunc("/move", addMoveReq)
 	http.HandleFunc("/watch", watch)
 	http.HandleFunc("/revert", revertMove)
 	http.HandleFunc("/start", startGame)
+	http.HandleFunc("/AI/add", saveAI)
+	http.HandleFunc("/AI/get", getAI)
+
 	log.Fatal(http.ListenAndServe(":"+os.Getenv("PORT"), nil))
 }
