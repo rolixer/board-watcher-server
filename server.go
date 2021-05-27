@@ -217,8 +217,8 @@ func sendMove(id string, m Move) {
 func watch(w http.ResponseWriter, r *http.Request) {
 	id := r.URL.Query().Get("id")
 	if games[id] == nil {
-		g := &game{[]Move{}, []*websocket.Conn{}}
-		games[id] = g
+		w.Write([]byte("Nie znaleźono gry o podanym ID"))
+		return
 	}
 
 	conn, err := upgrader.Upgrade(w, r, nil)
@@ -250,10 +250,21 @@ func watch(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func startGame(w http.ResponseWriter, r *http.Request) {
+	id := r.URL.Query().Get("id")
+	if games[id] == nil {
+		g := &game{[]Move{}, []*websocket.Conn{}}
+		games[id] = g
+	}
+
+	w.Write([]byte("Rozpoczęto rozgrywkę"))
+}
+
 func Start() {
 	http.HandleFunc("/", home)
 	http.HandleFunc("/move", addMoveReq)
 	http.HandleFunc("/watch", watch)
 	http.HandleFunc("/revert", revertMove)
+	http.HandleFunc("/start", startGame)
 	log.Fatal(http.ListenAndServe(":"+os.Getenv("PORT"), nil))
 }
