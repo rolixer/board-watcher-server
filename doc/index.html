@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#375EAB">
+
+  <title>boardwatcherserver - Go Documentation Server</title>
+
+<link type="text/css" rel="stylesheet" href="./lib/godoc/style.css">
+
+<script>window.initFuncs = [];</script>
+<script src="./lib/godoc/jquery.js" defer></script>
+
+
+
+<script>var goVersion = "go1.16.4";</script>
+<script src="./lib/godoc/godocs.js" defer></script>
+</head>
+<body>
+
+<div id='lowframe' style="position: fixed; bottom: 0; left: 0; height: 0; width: 100%; border-top: thin solid grey; background-color: white; overflow: auto;">
+...
+</div><!-- #lowframe -->
+
+<div id="topbar" class="wide"><div class="container">
+<div class="top-heading" id="heading-wide"><a href="/pkg/">Go Documentation Server</a></div>
+<div class="top-heading" id="heading-narrow"><a href="/pkg/">GoDoc</a></div>
+<a href="#" id="menu-button"><span id="menu-button-arrow">&#9661;</span></a>
+<form method="GET" action="/search">
+<div id="menu">
+
+<span class="search-box"><input type="search" id="search" name="q" placeholder="Search" aria-label="Search" required><button type="submit"><span><!-- magnifying glass: --><svg width="24" height="24" viewBox="0 0 24 24"><title>submit search</title><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/><path d="M0 0h24v24H0z" fill="none"/></svg></span></button></span>
+</div>
+</form>
+
+</div></div>
+
+
+
+<div id="page" class="wide">
+<div class="container">
+
+
+  <h1>
+    Package boardwatcherserver
+    <span class="text-muted"></span>
+  </h1>
+
+
+
+
+
+
+
+<div id="nav"></div>
+
+
+<!--
+	Copyright 2009 The Go Authors. All rights reserved.
+	Use of this source code is governed by a BSD-style
+	license that can be found in the LICENSE file.
+-->
+<!--
+	Note: Static (i.e., not template-generated) href and id
+	attributes start with "pkg-" to make it impossible for
+	them to conflict with generated attributes (some of which
+	correspond to Go identifiers).
+-->
+
+	<script>
+	document.ANALYSIS_DATA = null;
+	document.CALLGRAPH = null;
+	</script>
+
+	
+		
+		<div id="short-nav">
+			<dl>
+			<dd><code>import "board-watcher-server"</code></dd>
+			</dl>
+			<dl>
+			<dd><a href="#pkg-overview" class="overviewLink">Overview</a></dd>
+			<dd><a href="#pkg-index" class="indexLink">Index</a></dd>
+			
+			
+				<dd><a href="#pkg-subdirectories">Subdirectories</a></dd>
+			
+			</dl>
+		</div>
+		<!-- The package's Name is printed as title by the top-level template -->
+		<div id="pkg-overview" class="toggleVisible">
+			<div class="collapsed">
+				<h2 class="toggleButton" title="Click to show Overview section">Overview ▹</h2>
+			</div>
+			<div class="expanded">
+				<h2 class="toggleButton" title="Click to hide Overview section">Overview ▾</h2>
+				
+				
+			</div>
+		</div>
+
+		<div id="pkg-index" class="toggleVisible">
+		<div class="collapsed">
+			<h2 class="toggleButton" title="Click to show Index section">Index ▹</h2>
+		</div>
+		<div class="expanded">
+			<h2 class="toggleButton" title="Click to hide Index section">Index ▾</h2>
+
+		<!-- Table of contents for API; must be named manual-nav to turn off auto nav. -->
+			<div id="manual-nav">
+			<dl>
+			
+			
+			
+				
+				<dd><a href="#AddMove">func AddMove(id string, m Move)</a></dd>
+			
+				
+				<dd><a href="#AddMoveReq">func AddMoveReq(w http.ResponseWriter, r *http.Request)</a></dd>
+			
+				
+				<dd><a href="#GetAI">func GetAI(w http.ResponseWriter, r *http.Request)</a></dd>
+			
+				
+				<dd><a href="#Home">func Home(w http.ResponseWriter, r *http.Request)</a></dd>
+			
+				
+				<dd><a href="#RevertMove">func RevertMove(w http.ResponseWriter, r *http.Request)</a></dd>
+			
+				
+				<dd><a href="#SaveAI">func SaveAI(w http.ResponseWriter, r *http.Request)</a></dd>
+			
+				
+				<dd><a href="#SendGame">func SendGame(id string, c *websocket.Conn)</a></dd>
+			
+				
+				<dd><a href="#SendMove">func SendMove(id string, m Move)</a></dd>
+			
+				
+				<dd><a href="#Start">func Start()</a></dd>
+			
+				
+				<dd><a href="#StartGame">func StartGame(w http.ResponseWriter, r *http.Request)</a></dd>
+			
+				
+				<dd><a href="#Watch">func Watch(w http.ResponseWriter, r *http.Request)</a></dd>
+			
+			
+				
+				<dd><a href="#Game">type Game</a></dd>
+				
+				
+			
+				
+				<dd><a href="#Games">type Games</a></dd>
+				
+				
+			
+				
+				<dd><a href="#Move">type Move</a></dd>
+				
+				
+			
+			
+			</dl>
+			</div><!-- #manual-nav -->
+
+		
+
+		
+		
+		</div><!-- .expanded -->
+		</div><!-- #pkg-index -->
+
+		
+
+		
+		
+		
+			
+			
+			<h2 id="AddMove">func <a href="/src/board-watcher-server/server.go?s=2592:2623#L158">AddMove</a>
+				<a class="permalink" href="#AddMove">&#xb6;</a>
+				
+				
+			</h2>
+			<pre>func AddMove(id <a href="/pkg/builtin/#string">string</a>, m <a href="#Move">Move</a>)</pre>
+			<p>
+AddMove ads move to a game
+</p>
+
+			
+			
+
+		
+			
+			
+			<h2 id="AddMoveReq">func <a href="/src/board-watcher-server/server.go?s=1964:2019#L120">AddMoveReq</a>
+				<a class="permalink" href="#AddMoveReq">&#xb6;</a>
+				
+				
+			</h2>
+			<pre>func AddMoveReq(w <a href="/pkg/net/http/">http</a>.<a href="/pkg/net/http/#ResponseWriter">ResponseWriter</a>, r *<a href="/pkg/net/http/">http</a>.<a href="/pkg/net/http/#Request">Request</a>)</pre>
+			<p>
+AddMoveReq handler, add move to a game
+</p>
+
+			
+			
+
+		
+			
+			
+			<h2 id="GetAI">func <a href="/src/board-watcher-server/server.go?s=5507:5557#L280">GetAI</a>
+				<a class="permalink" href="#GetAI">&#xb6;</a>
+				
+				
+			</h2>
+			<pre>func GetAI(w <a href="/pkg/net/http/">http</a>.<a href="/pkg/net/http/#ResponseWriter">ResponseWriter</a>, r *<a href="/pkg/net/http/">http</a>.<a href="/pkg/net/http/#Request">Request</a>)</pre>
+			<p>
+GetAI handler downloads AI analyzed position
+</p>
+
+			
+			
+
+		
+			
+			
+			<h2 id="Home">func <a href="/src/board-watcher-server/server.go?s=1663:1712#L102">Home</a>
+				<a class="permalink" href="#Home">&#xb6;</a>
+				
+				
+			</h2>
+			<pre>func Home(w <a href="/pkg/net/http/">http</a>.<a href="/pkg/net/http/#ResponseWriter">ResponseWriter</a>, r *<a href="/pkg/net/http/">http</a>.<a href="/pkg/net/http/#Request">Request</a>)</pre>
+			<p>
+Home handler, sends simple text response for testing purposes
+</p>
+
+			
+			
+
+		
+			
+			
+			<h2 id="RevertMove">func <a href="/src/board-watcher-server/server.go?s=2843:2898#L171">RevertMove</a>
+				<a class="permalink" href="#RevertMove">&#xb6;</a>
+				
+				
+			</h2>
+			<pre>func RevertMove(w <a href="/pkg/net/http/">http</a>.<a href="/pkg/net/http/#ResponseWriter">ResponseWriter</a>, r *<a href="/pkg/net/http/">http</a>.<a href="/pkg/net/http/#Request">Request</a>)</pre>
+			<p>
+RecertMove handler, reverts last move in game
+</p>
+
+			
+			
+
+		
+			
+			
+			<h2 id="SaveAI">func <a href="/src/board-watcher-server/server.go?s=5251:5302#L266">SaveAI</a>
+				<a class="permalink" href="#SaveAI">&#xb6;</a>
+				
+				
+			</h2>
+			<pre>func SaveAI(w <a href="/pkg/net/http/">http</a>.<a href="/pkg/net/http/#ResponseWriter">ResponseWriter</a>, r *<a href="/pkg/net/http/">http</a>.<a href="/pkg/net/http/#Request">Request</a>)</pre>
+			<p>
+SaveAI handler saving AI analyzed position
+</p>
+
+			
+			
+
+		
+			
+			
+			<h2 id="SendGame">func <a href="/src/board-watcher-server/server.go?s=3394:3437#L196">SendGame</a>
+				<a class="permalink" href="#SendGame">&#xb6;</a>
+				
+				
+			</h2>
+			<pre>func SendGame(id <a href="/pkg/builtin/#string">string</a>, c *<a href="/pkg/github.com/gorilla/websocket/">websocket</a>.<a href="/pkg/github.com/gorilla/websocket/#Conn">Conn</a>)</pre>
+			<p>
+SendGame sends whole game to newly established connection
+</p>
+
+			
+			
+
+		
+			
+			
+			<h2 id="SendMove">func <a href="/src/board-watcher-server/server.go?s=3757:3789#L206">SendMove</a>
+				<a class="permalink" href="#SendMove">&#xb6;</a>
+				
+				
+			</h2>
+			<pre>func SendMove(id <a href="/pkg/builtin/#string">string</a>, m <a href="#Move">Move</a>)</pre>
+			<p>
+SendMove sends move to every client watching game witch given id
+</p>
+
+			
+			
+
+		
+			
+			
+			<h2 id="Start">func <a href="/src/board-watcher-server/server.go?s=5756:5768#L292">Start</a>
+				<a class="permalink" href="#Start">&#xb6;</a>
+				
+				
+			</h2>
+			<pre>func Start()</pre>
+			<p>
+Start the server
+</p>
+
+			
+			
+
+		
+			
+			
+			<h2 id="StartGame">func <a href="/src/board-watcher-server/server.go?s=4973:5027#L255">StartGame</a>
+				<a class="permalink" href="#StartGame">&#xb6;</a>
+				
+				
+			</h2>
+			<pre>func StartGame(w <a href="/pkg/net/http/">http</a>.<a href="/pkg/net/http/#ResponseWriter">ResponseWriter</a>, r *<a href="/pkg/net/http/">http</a>.<a href="/pkg/net/http/#Request">Request</a>)</pre>
+			<p>
+StartGame handler registering new game
+</p>
+
+			
+			
+
+		
+			
+			
+			<h2 id="Watch">func <a href="/src/board-watcher-server/server.go?s=4134:4184#L218">Watch</a>
+				<a class="permalink" href="#Watch">&#xb6;</a>
+				
+				
+			</h2>
+			<pre>func Watch(w <a href="/pkg/net/http/">http</a>.<a href="/pkg/net/http/#ResponseWriter">ResponseWriter</a>, r *<a href="/pkg/net/http/">http</a>.<a href="/pkg/net/http/#Request">Request</a>)</pre>
+			<p>
+Watch establishesh websocket connection to watch live game if game exists
+</p>
+
+			
+			
+
+		
+		
+			
+			
+			<h2 id="Game">type <a href="/src/board-watcher-server/server.go?s=1283:1357#L89">Game</a>
+				<a class="permalink" href="#Game">&#xb6;</a>
+				
+				
+			</h2>
+			<p>
+Game struct storing a single game
+</p>
+
+			<pre>type Game struct {
+<span id="Game.Moves"></span>    Moves       []<a href="#Move">Move</a>
+<span id="Game.Connections"></span>    Connections []*<a href="/pkg/github.com/gorilla/websocket/">websocket</a>.<a href="/pkg/github.com/gorilla/websocket/#Conn">Conn</a>
+}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+		
+			
+			
+			<h2 id="Games">type <a href="/src/board-watcher-server/server.go?s=1410:1437#L95">Games</a>
+				<a class="permalink" href="#Games">&#xb6;</a>
+				
+				
+			</h2>
+			<p>
+Games map storing games associeted with id&#39;s
+</p>
+
+			<pre>type Games map[<a href="/pkg/builtin/#string">string</a>]*<a href="#Game">Game</a></pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+		
+			
+			
+			<h2 id="Move">type <a href="/src/board-watcher-server/server.go?s=1104:1241#L81">Move</a>
+				<a class="permalink" href="#Move">&#xb6;</a>
+				
+				
+			</h2>
+			<p>
+Move struct storing a single move
+</p>
+
+			<pre>type Move struct {
+<span id="Move.Piece"></span>    Piece <a href="/pkg/builtin/#string">string</a> `json:&#34;piece&#34;`
+<span id="Move.From"></span>    From  <a href="/pkg/builtin/#string">string</a> `json:&#34;from&#34;`
+<span id="Move.To"></span>    To    <a href="/pkg/builtin/#string">string</a> `json:&#34;to&#34;`
+<span id="Move.Color"></span>    Color <a href="/pkg/builtin/#bool">bool</a>   `json:&#34;color&#34;`
+}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+		
+	
+
+	
+
+
+
+
+
+	
+	
+	</div>
+
+
+
+<div id="footer">
+Build version go1.16.4.<br>
+Except as <a href="https://developers.google.com/site-policies#restrictions">noted</a>,
+the content of this page is licensed under the
+Creative Commons Attribution 3.0 License,
+and code is licensed under a <a href="/LICENSE">BSD license</a>.<br>
+<a href="https://golang.org/doc/tos.html">Terms of Service</a> |
+<a href="https://www.google.com/intl/en/policies/privacy/">Privacy Policy</a>
+</div>
+
+</div><!-- .container -->
+</div><!-- #page -->
+</body>
+</html>

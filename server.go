@@ -1,4 +1,4 @@
-package main
+package boardwatcherserver
 
 import (
 	"encoding/json"
@@ -87,6 +87,7 @@ var fields = map[string]int{
 	"H1": 63,
 }
 
+// Move struct storing a single move
 type Move struct {
 	Piece string `json:"piece"`
 	From  string `json:"from"`
@@ -94,24 +95,27 @@ type Move struct {
 	Color bool   `json:"color"`
 }
 
-type game struct {
-	moves       []Move
-	connections []*websocket.Conn
+// Game struct storing a single game
+type Game struct {
+	Moves       []Move
+	Connections []*websocket.Conn
 }
 
-type Games map[string]*game
+// Games map storing games associeted with id's
+type Games map[string]*Game
 
-var upgrader = websocket.Upgrader{CheckOrigin: func(*http.Request) bool { return true }} // use default options
+var upgrader = websocket.Upgrader{CheckOrigin: func(*http.Request) bool { return true }}
 var games = make(Games)
 var gamesAI = make(map[string]string)
 
-func home(w http.ResponseWriter, r *http.Request) {
+// Home handler, sends simple text response for testing purposes
+func Home(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "Index Page")
 }
 
 func run() {
 
-	g1 := &game{[]Move{}, []*websocket.Conn{}}
+	g1 := &Game{[]Move{}, []*websocket.Conn{}}
 
 	games["xD"] = g1
 
@@ -122,7 +126,8 @@ func run() {
 
 }
 
-func addMoveReq(w http.ResponseWriter, r *http.Request) {
+// AddMoveReq handler, add move to a game
+func AddMoveReq(w http.ResponseWriter, r *http.Request) {
 
 	if r.Method != "POST" {
 		w.WriteHeader(http.StatusBadRequest)
@@ -148,30 +153,32 @@ func addMoveReq(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if games[id] == nil {
-		g := &game{[]Move{}, []*websocket.Conn{}}
+		g := &Game{[]Move{}, []*websocket.Conn{}}
 		games[id] = g
 	}
 
 	for _, m := range m {
-		games[id].moves = append(games[id].moves, m)
-		sendMove(id, m)
+		games[id].Moves = append(games[id].Moves, m)
+		SendMove(id, m)
 	}
 
 }
 
+// AddMove ads move to a game
 func AddMove(id string, m Move) {
 
 	if games[id] == nil {
-		g := &game{[]Move{}, []*websocket.Conn{}}
+		g := &Game{[]Move{}, []*websocket.Conn{}}
 		games[id] = g
 	}
 
-	games[id].moves = append(games[id].moves, m)
-	sendMove(id, m)
+	games[id].Moves = append(games[id].Moves, m)
+	SendMove(id, m)
 
 }
 
-func revertMove(w http.ResponseWriter, r *http.Request) {
+// RecertMove handler, reverts last move in game
+func RevertMove(w http.ResponseWriter, r *http.Request) {
 	id := r.URL.Query().Get("id")
 
 	if id == "" {
@@ -184,19 +191,20 @@ func revertMove(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	moves_r := games[id].moves
+	moves_r := games[id].Moves
 	moves_r = moves_r[:len(moves_r)-1]
-	games[id].moves = moves_r
+	games[id].Moves = moves_r
 
-	for _, c := range games[id].connections {
+	for _, c := range games[id].Connections {
 		c.WriteMessage(websocket.TextMessage, []byte("REVERT"))
 	}
 
 	w.Write([]byte("Cofnięto"))
 }
 
-func sendGame(id string, c *websocket.Conn) {
-	for _, m := range games[id].moves {
+//SendGame sends whole game to newly established connection
+func SendGame(id string, c *websocket.Conn) {
+	for _, m := range games[id].Moves {
 		moveStr := fmt.Sprintf("{\"piece\":%d, \"from\":%d, \"to\":%d, \"color\":%t}", pieces[m.Piece], fields[m.From], fields[m.To], m.Color)
 
 		c.WriteMessage(websocket.TextMessage, []byte(moveStr))
@@ -204,9 +212,10 @@ func sendGame(id string, c *websocket.Conn) {
 
 }
 
-func sendMove(id string, m Move) {
+// SendMove sends move to every client watching game witch given id
+func SendMove(id string, m Move) {
 
-	for _, conn := range games[id].connections {
+	for _, conn := range games[id].Connections {
 		moveStr := fmt.Sprintf("{\"piece\":%d, \"from\":%d, \"to\":%d, \"color\":%t}", pieces[m.Piece], fields[m.From], fields[m.To], m.Color)
 
 		conn.WriteMessage(websocket.TextMessage, []byte(moveStr))
@@ -215,7 +224,8 @@ func sendMove(id string, m Move) {
 
 }
 
-func watch(w http.ResponseWriter, r *http.Request) {
+// Watch establishesh websocket connection to watch live game if game exists
+func Watch(w http.ResponseWriter, r *http.Request) {
 	id := r.URL.Query().Get("id")
 	if games[id] == nil {
 		w.Write([]byte("Nie znaleźono gry o podanym ID"))
@@ -224,8 +234,8 @@ func watch(w http.ResponseWriter, r *http.Request) {
 
 	conn, err := upgrader.Upgrade(w, r, nil)
 
-	games[id].connections = append(games[id].connections, conn)
-	sendGame(id, conn)
+	games[id].Connections = append(games[id].Connections, conn)
+	SendGame(id, conn)
 
 	if err != nil {
 		log.Print("Error during connection upgradation:", err)
@@ -251,17 +261,19 @@ func watch(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func startGame(w http.ResponseWriter, r *http.Request) {
+// StartGame handler registering new game
+func StartGame(w http.ResponseWriter, r *http.Request) {
 	id := r.URL.Query().Get("id")
 	if games[id] == nil {
-		g := &game{[]Move{}, []*websocket.Conn{}}
+		g := &Game{[]Move{}, []*websocket.Conn{}}
 		games[id] = g
 	}
 
 	w.Write([]byte("Rozpoczęto rozgrywkę"))
 }
 
-func saveAI(w http.ResponseWriter, r *http.Request) {
+// SaveAI handler saving AI analyzed position
+func SaveAI(w http.ResponseWriter, r *http.Request) {
 	id := r.URL.Query().Get("id")
 
 	body, err := ioutil.ReadAll(r.Body)
@@ -274,7 +286,8 @@ func saveAI(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func getAI(w http.ResponseWriter, r *http.Request) {
+// GetAI handler downloads AI analyzed position
+func GetAI(w http.ResponseWriter, r *http.Request) {
 	id := r.URL.Query().Get("id")
 
 	if _, ok := gamesAI[id]; ok {
@@ -285,14 +298,15 @@ func getAI(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// Start the server
 func Start() {
-	http.HandleFunc("/", home)
-	http.HandleFunc("/move", addMoveReq)
-	http.HandleFunc("/watch", watch)
-	http.HandleFunc("/revert", revertMove)
-	http.HandleFunc("/start", startGame)
-	http.HandleFunc("/AI/add", saveAI)
-	http.HandleFunc("/AI/get", getAI)
+	http.HandleFunc("/", Home)
+	http.HandleFunc("/move", AddMoveReq)
+	http.HandleFunc("/watch", Watch)
+	http.HandleFunc("/revert", RevertMove)
+	http.HandleFunc("/start", StartGame)
+	http.HandleFunc("/AI/add", SaveAI)
+	http.HandleFunc("/AI/get", GetAI)
 
 	log.Fatal(http.ListenAndServe(":"+os.Getenv("PORT"), nil))
 }
