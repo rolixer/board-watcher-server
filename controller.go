@@ -1,4 +1,4 @@
-package boardwatcherserver
+package main
 
 func main() {
 
