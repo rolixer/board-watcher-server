@@ -291,10 +291,11 @@ func GetAI(w http.ResponseWriter, r *http.Request) {
 	id := r.URL.Query().Get("id")
 
 	if _, ok := gamesAI[id]; ok {
+		w.Header().Set("Access-Control-Allow-Origin", "*")
 		w.Write([]byte(gamesAI[id]))
 	} else {
+		w.Header().Set("Access-Control-Allow-Origin", "*")
 		w.Write([]byte("Brak pozycji o takim ID"))
-		return
 	}
 }
 

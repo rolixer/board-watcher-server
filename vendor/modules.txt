@@ -1,3 +1,5 @@
 # github.com/gorilla/websocket v1.4.2
 ## explicit
 github.com/gorilla/websocket
+# golang.org/x/tools v0.1.2
+## explicit
